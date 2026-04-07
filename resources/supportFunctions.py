@@ -77,19 +77,19 @@ class sqlConnection():
 
             placeholders = ", ".join(["%s"] * len(cols))
             updates = ", ".join([f"{col}=VALUES({col})" for col in cols if col not in mergeKeys])
-            query = f"INSERT INTO {schemaName}.{tableName} ({', '.join(cols)}) VALUES ({placeholders}) ON DUPLICATE KEY UPDATE {updates};"
+            query = f"INSERT INTO `{schemaName}`.{tableName} ({', '.join(cols)}) VALUES ({placeholders}) ON DUPLICATE KEY UPDATE {updates};"
             self.cursorMany.executemany(query, self.parseValues(df))
         else:
             placeholders = ", ".join(["%s"] * len(cols))
-            self.execSingle(f"TRUNCATE TABLE {schemaName}.{tableName}")
-            query = f"INSERT INTO {schemaName}.{tableName} ({', '.join(cols)}) VALUES ({placeholders})"
+            self.execSingle(f"TRUNCATE TABLE `{schemaName}`.{tableName}")
+            query = f"INSERT INTO `{schemaName}`.{tableName} ({', '.join(cols)}) VALUES ({placeholders})"
             self.cursorMany.executemany(query, self.parseValues(df))
 
         self.connection.commit()
 
         # Optioneel: log de sync
         self.execSingle(f"""
-            INSERT INTO {schemaName}.syncLog (tableName, date, records)
+            INSERT INTO `{schemaName}`.syncLog (tableName, date, records)
             VALUES (%s, %s, %s)
             ON DUPLICATE KEY UPDATE records=VALUES(records)
         """, (tableName, datetime.now().date(), len(df)))
@@ -125,12 +125,10 @@ class sqlConnection():
         else:
             print("Database bestaat nog niet. Maak aan...")
             querySchema = \
-                f"""IF SCHEMA_ID('{schemaName}') IS NULL BEGIN EXEC('CREATE SCHEMA {schemaName}') END"""
+                f"CREATE DATABASE IF NOT EXISTS {schemaName}"
             self.execSingle(querySchema)
             existingTables = []
 
-        print(existingTables)
-        exit()
         monitor = configDatabase['tables']['monitor']
         fact = configDatabase['tables']['fact']
         meta = configDatabase['tables']['meta']
@@ -140,19 +138,19 @@ class sqlConnection():
 
         for table in tables:
             constraints = []
-            if table.get('constraints'):
-                for constraint in table['constraints']:
-                    constraints.append(f"CONSTRAINT {table['name']}_{constraint['name']} {constraint['type']} {'CLUSTERED' if constraint['clustered'] else ''} ({', '.join(constraint['columns'])})")
+            # if table.get('constraints'):
+            #     for constraint in table['constraints']:
+            #         constraints.append(f"CONSTRAINT {table['name']}_{constraint['name']} {constraint['type']} {'CLUSTERED' if constraint['clustered'] else ''} ({', '.join(constraint['columns'])})")
 
 
             self.execSingle(
-                f"""CREATE TABLE {schemaName}.{table['name']}"""
+                f"""CREATE TABLE `{schemaName}`.{table['name']}"""
                 f"""({table['columns'].replace('$NAME', table['name'])}{(','+','.join(constraints)) if len(constraints) > 0 else ''})"""
                 )
             
             if table.get('indexes'):
                 for index in table['indexes']:
-                    self.execSingle(f"CREATE INDEX {table['name']}_{index['name']} ON {schemaName}.{table['name']} ({', '.join(index['columns'])})")
+                    self.execSingle(f"CREATE INDEX {table['name']}_{index['name']} ON `{schemaName}`.{table['name']} ({', '.join(index['columns'])})")
 
     # def constructDatabase(self, configDatabase, dbName):
 
