@@ -8,16 +8,14 @@ tables:
         tableName VARCHAR(150) NOT NULL,
         date DATE NOT NULL,
         records INT NOT NULL,
-        insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
         "
-      indexes: NULL
-      constraints:
-        - name: PK
-          type: PRIMARY KEY
-          clustered: true
+      indexes:
+        - name: IX_TableDate
           columns:
-            - "[tableName]"
-            - "[date] DESC"
+            - tableName
+            - date
   fact:
     # - name: test
     #   columns: "

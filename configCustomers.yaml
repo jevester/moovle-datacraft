@@ -1,20 +1,6 @@
 customers:
   - name: moovle mysql
-    local: false
     server: 136.144.212.238
     database: mvl-sqldb-bi-prod
-    schema: bcstore
     port: 3306
-    trusted_connection: true
-    trust_server_certificate: true
     credPrefix: mvl
-
-  # - name: van Kommer
-  #   local: false
-  #   server: bnf-sql-prod-weu-001.database.windows.net
-  #   database: bnf-sqldb-prod-weu-001
-  #   schema: reporting
-  #   port: 1433
-  #   trusted_connection: false
-  #   trust_server_certificate: false
-  #   credPrefix: vkmr

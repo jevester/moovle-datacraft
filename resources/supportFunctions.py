@@ -105,58 +105,97 @@ class sqlConnection():
             self.connection.close()
             self.connection = None
 
-    def checkExistingTable(self, schemaName, tableName):
-        return self.execSingle(f"""
-            SELECT TABLE_NAME 
-            FROM INFORMATION_SCHEMA.TABLES 
-            WHERE TABLE_SCHEMA='{schemaName}' AND TABLE_NAME='{tableName}'
-        """)
+    
+    # def checkExistingTable(self, schemaName, tableName):
+    #     return self.execSingle(f"""
+    #         SELECT TABLE_NAME 
+    #         FROM INFORMATION_SCHEMA.TABLES 
+    #         WHERE TABLE_SCHEMA = '{schemaName}'
+    #         AND TABLE_NAME = '{tableName}'
+    #     """)
 
-    def constructDatabase(self, configDatabase, schemaName='dbo'):
-        # schemaName = configDatabase['schema']['name']
-        # Maak database aan als die nog niet bestaat
-        # self.execSingle(f"CREATE DATABASE IF NOT EXISTS {schemaName}")
-        self.execSingle(f"USE `{self.config['database']}`")
+    def checkExistingDatabase(self, schemaName):
+        return self.execSingle(f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='{schemaName}' AND TABLE_TYPE = 'BASE TABLE'") if True else None
 
-        # Loop over alle categorieën
-        for category in ['monitor', 'fact', 'meta']:
-            for table in configDatabase['tables'].get(category, []):
-                tableName = table['name']
+    def constructDatabase(self, configDatabase, schemaName):
+        existingTables = self.checkExistingDatabase(schemaName)
+        if existingTables:
+            print("Database bestaat al")
+            existingTables = [r[0] for r in existingTables]
+        else:
+            print("Database bestaat nog niet. Maak aan...")
+            querySchema = \
+                f"""IF SCHEMA_ID('{schemaName}') IS NULL BEGIN EXEC('CREATE SCHEMA {schemaName}') END"""
+            self.execSingle(querySchema)
+            existingTables = []
 
-                # Check of tabel bestaat
-                existing = self.checkExistingTable(schemaName, tableName)
-                if existing:
-                    print(f"Tabel {tableName} bestaat al")
-                    continue
+        print(existingTables)
+        exit()
+        monitor = configDatabase['tables']['monitor']
+        fact = configDatabase['tables']['fact']
+        meta = configDatabase['tables']['meta']
 
-                print(f"Aanmaken van tabel {tableName}")
+        tables = (monitor or []) + (meta or []) + (fact or [])
+        tables = [t for t in tables if t['name'] not in existingTables]
 
-                # Converteer kolommen naar MySQL syntax
-                columns_sql = table['columns']
-                # columns_sql = columns_sql.replace('[', '').replace(']', '')
-                # columns_sql = columns_sql.replace('IDENTITY(1,1)', 'AUTO_INCREMENT')
-                # columns_sql = columns_sql.replace('NVARCHAR', 'VARCHAR')
-                # columns_sql = columns_sql.replace('DATETIMEOFFSET', 'DATETIME')
-                # columns_sql = columns_sql.replace('SYSDATETIMEOFFSET()', 'CURRENT_TIMESTAMP')
-                columns_sql = columns_sql.replace('$NAME', tableName)
+        for table in tables:
+            constraints = []
+            if table.get('constraints'):
+                for constraint in table['constraints']:
+                    constraints.append(f"CONSTRAINT {table['name']}_{constraint['name']} {constraint['type']} {'CLUSTERED' if constraint['clustered'] else ''} ({', '.join(constraint['columns'])})")
 
-                # print(f"CREATE TABLE {schemaName}.{tableName} ({columns_sql})")
-                # exit()
-                # Maak de tabel
-                self.execSingle(f"CREATE TABLE {schemaName}.{tableName} ({columns_sql})")
 
-                # Voeg eventueel constraints toe
-                if table.get('constraints'):
-                    for constraint in table['constraints']:
-                        if constraint['type'].upper() == 'PRIMARY KEY':
-                            cols = [c.replace('[','').replace(']','') for c in constraint['columns']]
-                            self.execSingle(f"ALTER TABLE {schemaName}.{tableName} ADD PRIMARY KEY ({', '.join(cols)})")
+            self.execSingle(
+                f"""CREATE TABLE {schemaName}.{table['name']}"""
+                f"""({table['columns'].replace('$NAME', table['name'])}{(','+','.join(constraints)) if len(constraints) > 0 else ''})"""
+                )
+            
+            if table.get('indexes'):
+                for index in table['indexes']:
+                    self.execSingle(f"CREATE INDEX {table['name']}_{index['name']} ON {schemaName}.{table['name']} ({', '.join(index['columns'])})")
 
-                # Voeg eventueel indexes toe
-                if table.get('indexes'):
-                    for index in table['indexes']:
-                        indexCols = [c.replace('[','').replace(']','') for c in index['columns']]
-                        self.execSingle(f"CREATE INDEX {tableName}_{index['name']} ON {schemaName}.{tableName} ({', '.join(indexCols)})")
+    # def constructDatabase(self, configDatabase, dbName):
+
+
+
+    #     # Loop over alle categorieën
+    #     for category in ['monitor', 'fact', 'meta']:
+    #         for table in configDatabase['tables'].get(category, []):
+    #             tableName = table['name']
+
+    #             existing = self.checkExistingTable(dbName, tableName)
+    #             if existing:
+    #                 print(f"Tabel {tableName} bestaat al")
+    #                 continue
+
+    #             print(f"Aanmaken van tabel {tableName}")
+
+    #             # Converteer kolommen naar MySQL syntax
+    #             columns_sql = table['columns']
+    #             # columns_sql = columns_sql.replace('[', '').replace(']', '')
+    #             # columns_sql = columns_sql.replace('IDENTITY(1,1)', 'AUTO_INCREMENT')
+    #             # columns_sql = columns_sql.replace('NVARCHAR', 'VARCHAR')
+    #             # columns_sql = columns_sql.replace('DATETIMEOFFSET', 'DATETIME')
+    #             # columns_sql = columns_sql.replace('SYSDATETIMEOFFSET()', 'CURRENT_TIMESTAMP')
+    #             columns_sql = columns_sql.replace('$NAME', tableName)
+
+    #             print(f"CREATE TABLE `{dbName}`.{tableName} ({columns_sql})")
+    #             # exit()
+    #             # Maak de tabel
+    #             self.execSingle(f"CREATE TABLE `{dbName}`.{tableName} ({columns_sql})")
+
+    #             # Voeg eventueel constraints toe
+    #             if table.get('constraints'):
+    #                 for constraint in table['constraints']:
+    #                     if constraint['type'].upper() == 'PRIMARY KEY':
+    #                         cols = [c.replace('[','').replace(']','') for c in constraint['columns']]
+    #                         self.execSingle(f"ALTER TABLE `{dbName}`.{tableName} ADD PRIMARY KEY ({', '.join(cols)})")
+
+    #             # Voeg eventueel indexes toe
+    #             if table.get('indexes'):
+    #                 for index in table['indexes']:
+    #                     indexCols = [c.replace('[','').replace(']','') for c in index['columns']]
+    #                     self.execSingle(f"CREATE INDEX {tableName}_{index['name']} ON `{dbName}`.{tableName} ({', '.join(indexCols)})")
 
 class secrets():
     def __init__(self, vaultUrl='', local=False, prefix='', credFolder=''):

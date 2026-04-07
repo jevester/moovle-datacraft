@@ -148,9 +148,9 @@ def main():
         }
 
         
-        schemaName = customer['schema']
+        dbName = customer['database']
         sqlc = sqlConnection(customer, s.get('SqlUser'), s.get('SqlPassword'))
-        sqlc.constructDatabase(configDatabase, schemaName=schemaName)
+        sqlc.constructDatabase(configDatabase, dbName)
 
 
 
@@ -160,7 +160,7 @@ def main():
 
        
         syncLogName = 'syncLog'
-        synclog = dict(sqlc.execSingle(f"SELECT [tableName], MAX([date]) AS [date] FROM {schemaName}.[{syncLogName}] GROUP BY [tableName]"))
+        synclog = dict(sqlc.execSingle(f"SELECT [tableName], MAX([date]) AS [date] FROM {dbName}.[{syncLogName}] GROUP BY [tableName]"))
         for t in tbls:
             tableName = t['name']
             print(f"Working on {tableName}") if app_env == 'local' else None
@@ -175,7 +175,7 @@ def main():
                 continue
             df = t['func'](resp)
             try:
-                sqlc.writeMany(df, tableName, schemaName, merge=t['merge'], mergeKeys=t['mergeKeys'], syncTableName=syncLogName)
+                sqlc.writeMany(df, tableName, dbName, merge=t['merge'], mergeKeys=t['mergeKeys'], syncTableName=syncLogName)
             except Exception as e:
                 # df.to_csv(f"check_{tableName}.csv", index=False, sep=";")
                 print(df.dtypes)
