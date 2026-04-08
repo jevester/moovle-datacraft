@@ -36,8 +36,10 @@ def get_resp(url, headers, expandCol, expandColSelect, cols, pagination=None, ad
     
     data = []
     page = 1
+    maxPages = 100
+    ogPage = page
     while True:
-        if page > 100:
+        if page > ogPage + maxPages:
             break
         print(f'Getting page {page}') if app_env == 'local' else None
         cursor = {
@@ -126,19 +128,33 @@ def main():
 
         #Klaar fact
         # {'name': 'wmsDocumentLines', 'func': Tables.wmsDocumentLines, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'wmsDocumentLines', 'merge': True, 'mergeKeys': ['id'], 'filter': True, 'filterField': 'modifiedDateTime', 'cols': ["id", "documentType", "documentNo", "lineNo", "sellToCustomerNo", "sellToCustomerNo2", "buyFromVendorNo", "dossierNo", "carrierTypeCode", "currencyCode", "currencyFactor", "lineAmountLCY", "type", "no", "externalNo", "itemNo", "description", "description2", "baseUnitOfMeasureCode", "unitOfMeasureCode", "qtyPerUnitOfMeasure", "quantity", "quantityBase", "qtyOutstanding", "qtyBaseOutstanding", "storageChargeNo", "unitPrice", "lineAmount", "carrierQuantity", "qtyPerCarrier", "carrierQtyOutstanding", "createdDateTime", "createdUserID", "modifiedDateTime", "modifiedUserID", "orderUnitOfMeasureCode", "qtyPerOrderUnitOfMeasure", "tareWeightPerUoM", "grossWeightPerUoM", "netWeightPerUoM", "volumeWeight", "tareWeight", "grossWeight", "netWeight", "batchNo", "externalBatchNo", "grossWeightOutstanding", "netWeightOutstanding", "qtyToHandle", "customerItemNo2", "batchNo2", "storageChargeNo2", "unitOfMeasureCode2", "locationNo", "buildingCode", "customsCode", "tariffNo", "countryOfOriginCode", "countryPurchasedCode", "customsValue", "customsValuePer", "ncTsDocumentNo", "additionalDocumentNo", "placeOfCertificateDelivery", "destination", "declarationDocumentType", "customsCurrencyCode", "containerNo", "vesselNo", "itemHandling", "orderTypeCode", "entrepotStorage", "commentText", "externalDocumentNo", "shortcutDimension1Code", "shortcutDimension2Code", "postingDate", "invoiceType", "invoiceNo", "invoiceDate", "purchInvoiceNo", "purchInvoiceDate", "reservationPosted", "agreementType", "agreementNo", "agreementLineNo", "agreementDetailLineNo", "agreementDetailLineType", "senderAddressNo", "isActivity", "shiptoAddressNo", "activityDate", "activityTime", "customsIssueDate", "declarationDocumentNo", "attribute01", "attribute02", "attribute03", "attribute04", "attribute05", "sellToCustomerName", "buyFromVendorName", "qtyCreated", "qtyPosted", "qtyBaseCreated", "qtyBasePosted", "carrierQtyCreated", "carrierQtyPosted", "defaultNetWeightPerUOM", "grossWeightCreated", "netWeightCreated", "grossWeightPosted", "netWeightPosted", "tariffDescription", "shiptoAddressName"], 'expandCol': None, 'expandColSelect': [], 'pars': None},
-        # {'name': 'generalLedgerEntries', 'func': Tables.generalLedgerEntries, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'generalLedgerEntries', 'merge': True, 'mergeKeys': ['id'], 'filter': False, 'filterField': 'lastModifiedDateTime', 'cols': ['id', "entryNo", "gLAccountNo", "postingDate", "documentType", "documentNo", "description", "balAccountNo", "amount", "globalDimension1Code", "globalDimension2Code", "userID", "sourceCode", "priorYearEntry", "quantity", "journalBatchName", "genPostingType", "genBusPostingGroup", "debitAmount", "creditAmount", "documentDate", "externalDocumentNo", "sourceType", "sourceNo", "reversedByEntryNo", "reversedEntryNo", "gLAccountName", "shortcutDimension3Code", "shortcutDimension4Code", "wmsDocumentNo", "wmsDocumentLineNo", 'lastModifiedDateTime'], 'expandCol': None, 'expandColSelect': [], 'pars': None, 'makeNewConnection': True},
+        {'name': 'generalLedgerEntries', 'func': Tables.generalLedgerEntries, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'generalLedgerEntries', 'merge': True, 'mergeKeys': ['id'], 'filter': True, 'filterField': 'lastModifiedDateTime', 'cols': ['id', "entryNo", "gLAccountNo", "postingDate", "documentType", "documentNo", "description", "balAccountNo", "amount", "globalDimension1Code", "globalDimension2Code", "userID", "sourceCode", "priorYearEntry", "quantity", "journalBatchName", "genPostingType", "genBusPostingGroup", "debitAmount", "creditAmount", "documentDate", "externalDocumentNo", "sourceType", "sourceNo", "reversedByEntryNo", "reversedEntryNo", "gLAccountName", "shortcutDimension3Code", "shortcutDimension4Code", "wmsDocumentNo", "wmsDocumentLineNo", 'lastModifiedDateTime'], 'expandCol': None, 'expandColSelect': [], 'pars': None},
 
 
         # Bezig
-        {'name': 'wmsDocumentHeaders', 'func': Tables.wmsDocumentHeaders, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'wmsDocumentHeaders', 'merge': True, 'mergeKeys': ['id'], 'filter': True, 'filterField': 'modifiedDateTime', 'cols': ['id', 'documentType', 'no', 'sellToCustomerNo', 'buildingCode', 'postingDate', 'statusCode', 'containerNo', 'vesselNo', 'senderAddressNo', 'shipToAddressNo', 'billOfLadingNo', 'shortcutDimension2Code', 'attribute04', 'containerSizeCode', 'sellToCustomerName', 'billToCustomerNo', 'billToCustomerName', 'salespersonCode', 'direction', 'locationNo', 'movementType', 'documentDate', 'orderDate', 'statusTemplateCode', 'createdDateTime', 'modifiedDateTime', 'noSeries', 'externalDocumentNo', 'externalReference', 'shippingAgentCode', 'announcedDate', 'arrivedDate', 'departedDate', 'deliveryDate', 'estimatedDepartureDate', 'parentDocumentType', 'parentDocumentNo', 'customsCode', 'tariffNo', 'countryOfOriginCode', 'countryOfDestinationCode', 'declarationDate', 'destination', 'expectQtyCarriers', 'customsValue', 'incotermsCode', 'invoiceValue', 'incotermsCity', 'additionalDocumentNo', 'certificateNo', 'shortcutDimension1Code', 'attribute05', 'grossWeight', 'netWeight', 'quantity', 'carrierQuantity', 'portFrom', 'portTo', 'sealNo', 'sendersAddressName', 'shipToAddressName', 'sendersAddressCity', 'shipToAddressCity', 'carrierQtyCreated', 'consigneeName', 'shipperName', 'agentName'], 'expandCol': None, 'expandColSelect': [], 'pars': None},
+        # {'name': 'wmsDocumentHeaders', 'func': Tables.wmsDocumentHeaders, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'wmsDocumentHeaders', 'merge': True, 'mergeKeys': ['id'], 'filter': True, 'filterField': 'modifiedDateTime', 'cols': ['id', 'documentType', 'no', 'sellToCustomerNo', 'buildingCode', 'postingDate', 'statusCode', 'containerNo', 'vesselNo', 'senderAddressNo', 'shipToAddressNo', 'billOfLadingNo', 'shortcutDimension2Code', 'attribute04', 'containerSizeCode', 'sellToCustomerName', 'billToCustomerNo', 'billToCustomerName', 'salespersonCode', 'direction', 'locationNo', 'movementType', 'documentDate', 'orderDate', 'statusTemplateCode', 'createdDateTime', 'modifiedDateTime', 'noSeries', 'externalDocumentNo', 'externalReference', 'shippingAgentCode', 'announcedDate', 'arrivedDate', 'departedDate', 'deliveryDate', 'estimatedDepartureDate', 'parentDocumentType', 'parentDocumentNo', 'customsCode', 'tariffNo', 'countryOfOriginCode', 'countryOfDestinationCode', 'declarationDate', 'destination', 'expectQtyCarriers', 'customsValue', 'incotermsCode', 'invoiceValue', 'incotermsCity', 'additionalDocumentNo', 'certificateNo', 'shortcutDimension1Code', 'attribute05', 'grossWeight', 'netWeight', 'quantity', 'carrierQuantity', 'portFrom', 'portTo', 'sealNo', 'sendersAddressName', 'shipToAddressName', 'sendersAddressCity', 'shipToAddressCity', 'carrierQtyCreated', 'consigneeName', 'shipperName', 'agentName'], 'expandCol': None, 'expandColSelect': [], 'pars': None},
 
 
 
         # Nog afmaken
 #         """
-# Chart_of_Accounts
+# Chart_of_Accounts (is pagina, staat in legacy)
+# Accounts = Grootboekrekening in pbi
 # customerLedgerEntries
-
+# vendorLedgerEntries
+# wmsDocumentContainers
+# WMSPostedDocumentHeader
+# WMSPostedDocumentLine
+# wmsDocumentPackageLines
+# wmsAddresses
+# Status_Steps is Odata, zoeken in API
+# WMSDocumentCommentSheet
+# Buildings?
+# customers
+# contacts
+# vendors
+# purchaseHeaders
+# statusLog
 #         """
 
         # Reference for expand
@@ -183,13 +199,6 @@ def main():
             if len(resp) == 0 and testing:
                 continue
             df = t['func'](resp)
-            if t.get('makeNewConnection', None):
-                print('new connection')
-                try:
-                    sqlc.close()
-                except:
-                    pass
-                sqlc = sqlConnection(customer, s.get('SqlUser'), s.get('SqlPassword'))
             try:
                 sqlc.writeMany(df, tableName, dbName, merge=t['merge'], mergeKeys=t['mergeKeys'])
             except Exception as e:
