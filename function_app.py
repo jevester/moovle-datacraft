@@ -24,7 +24,7 @@ def notify(msg):
 
 @app.timer_trigger(schedule="0 0 4 * * *", arg_name="myTimer", run_on_startup=False,
               use_monitor=False) 
-def stockManagement(myTimer: func.TimerRequest) -> None:
+def dailyRefresh(myTimer: func.TimerRequest) -> None:
 
     try:
         script()
