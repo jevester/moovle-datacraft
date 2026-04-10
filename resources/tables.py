@@ -130,7 +130,8 @@ class Tables:
                 'attribute02': e['attribute02'],
                 'attribute03': e['attribute03'],
                 'attribute04': e['attribute04'],
-                'attribute05': e['attribute05']
+                'attribute05': e['attribute05'],
+                'isUTB': True if e['no'] in ['UTB', 'BTW', 'BTWB02'] else False
             })
         return pd.DataFrame(data)
 
@@ -169,8 +170,11 @@ class Tables:
                 'shortcutDimension3Code': e['shortcutDimension3Code'],
                 'shortcutDimension4Code': e['shortcutDimension4Code'],
                 'lastModifiedDateTime': parsingDateTime(e['lastModifiedDateTime']),
-                'wmsDocumentNo': e['wmsDocumentNo'],
-                'wmsDocumentLineNo': e['wmsDocumentLineNo']
+                'wmsDocumentNo': e['wmsDocumentNo'] if e['wmsDocumentNo'] != '' else None,
+                'wmsDocumentLineNo': e['wmsDocumentLineNo'] if e['wmsDocumentLineNo'] != '' else None,
+                'noSeries': e['noSeries'],
+                'isUTB': False if e['wmsDocumentNo'] == '' else None,
+                'isCorrectieOfJaarafsluiting': True if ((int(e['gLAccountNo']) in [1392,1393,1650,1652]) and (len(e['wmsDocumentNo']) < 2) and (e['noSeries'] == 'FIN-DOC')) else False
             })
         return pd.DataFrame(data)
 
@@ -406,7 +410,8 @@ class Tables:
                 'netWeight': e['netWeight'],
                 'containerNo': e['containerNo'],
                 'vesselNo': e['vesselNo'],
-                'postingDate': parsingDate(e['postingDate'])
+                'postingDate': parsingDate(e['postingDate']),
+                'isUTB': True if e['no'] in ['UTB', 'BTW', 'BTWB02'] else False
 
             })
         return pd.DataFrame(data)
@@ -630,3 +635,27 @@ class Tables:
                 'lastModifiedDateTime': pd.to_datetime(e['lastModifiedDateTime'])
             })
         return pd.DataFrame(data)
+
+class Queries:
+
+    def fillLedgerTableIsUtb():
+        return \
+    """
+        UPDATE `mvl-sqldb-bi-prod`.generalLedgerEntries a
+        LEFT JOIN (
+            SELECT documentNo, lineNo, isUTB
+            FROM `mvl-sqldb-bi-prod`.wmsDocumentLines
+            
+            UNION
+            
+            SELECT documentNo, lineNo, isUTB
+            FROM `mvl-sqldb-bi-prod`.wmsPostedDocumentLines
+        ) b
+        ON a.wmsDocumentNo = b.documentNo
+        AND a.wmsDocumentLineNo = b.lineNo
+
+        SET a.isUTB = COALESCE(b.isUTB, 0)
+
+        WHERE a.isUTB IS NULL;
+
+    """

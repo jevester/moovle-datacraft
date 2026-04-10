@@ -135,6 +135,7 @@ tables:
         attribute04 VARCHAR(100),
         attribute05 VARCHAR(100),
         attribute06 VARCHAR(100),
+        isUTB BIT NULL,
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"
       indexes:
@@ -176,6 +177,9 @@ tables:
         lastModifiedDateTime DATETIME,
         wmsDocumentNo VARCHAR(50),
         wmsDocumentLineNo INT,
+        noSeries VARCHAR(50),
+        isCorrectieOfJaarafsluiting BIT NOT NULL,
+        isUTB BIT NULL,
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"
       indexes:
@@ -396,6 +400,7 @@ tables:
         containerNo VARCHAR(50),
         vesselNo VARCHAR(50),
         postingDate DATE,
+        isUTB BIT NULL,
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"
       indexes:
