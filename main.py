@@ -142,19 +142,6 @@ def main():
 
     ]
 
-        # Comments
-            #         """
-            # Chart_of_Accounts (is pagina, staat in legacy)
-            # Status_Steps is Odata, zoeken in API, lijkt iets met verkoopfacturen ofzo
-            # WMSDocumentCommentSheet Is deels gelukt, maar niet extended comments want ook weer legacy
-
-            #         """
-
-        # Reference for expand
-        # {'name': 'wmsDocumentHeaders', 'func': Tables.check, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'wmsDocumentHeaders', 'merge': True, 'mergeKeys': ['id'], 'filter': True, 'filterField': None, 'cols': ["documentType", "no", "sellToCustomerNo", "billToCustomerNo", "dossierNo", "buildingCode", "billOfLadingType", "direction", "locationNo", "voyageNo", "timeSlotBookingNo", "timeSlotNeededCapacity", "movementType", "documentDate", "orderDate", "postingDate", "statusCode", "orderpicker", "comment", "docInfoSetID", "externalDocumentNo", "externalReference", "shippingAgentCode", "vehicleNo", "trailerContainerNo", "dockNo", "announcedDate", "announcedTime", "arrivedDate", "arrivedTime", "departedDate", "departedTime", "waitingDuration", "destination", "plannedStartDate", "plannedEndDate", "plannedStartTime", "plannedEndTime", "containerNo", "orderTypeCode", "billOfLadingNo", "senderAddressNo", "shipToAddressNo", "sendersAddressName", "shipToAddressName", "shipToAddressCity", "tripNo", "attribute01", "attribute02", "attribute03", "attribute04", "attribute05", "attribute06", "attribute07", "attribute08", "attribute09", "attribute10", "grossWeight", "netWeight", "quantity", "carrierQuantity", "shipperName"], 'expandCol': 'wmsDocumentLines', 'expandColSelect': ["documentNo", "lineNo", "sellToCustomerNo", "buyFromVendorNo", "dossierNo", "lineAmountLCY", "originalLineQty", "qtyPerCarrier", "type", "no", "itemNo", "description", "unitOfMeasureCode", "baseUnitOfMeasureCode", "quantity", "carrierQtyPosted", "grossWeight", "netWeight", "locationNo", "buildingCode", "tariffDescription", "orderTypeCode", "postingDate", "attribute02", "attribute03", "attribute04", "attribute06", "attribute09", "carrierQuantity"], 'pars': f"""arrivedDate le {(datetime.now() + timedelta(days=14)).strftime("%Y-%m-%dT%H:%M:%SZ")} and arrivedDate ge {(datetime.now()).strftime("%Y-%m-%dT%H:%M:%SZ")}"""},
-
-    ]
-
     for customer in customers:
         
         s = secrets(vaultUrl='https://bi-prod-keyvault-svnshfg.vault.azure.net/', local=True if app_env == 'local' else False, prefix=customer['credPrefix'])

@@ -12,7 +12,7 @@ def notify(msg):
 
     error = {
         "error": msg,
-        "sourceClient": 'Moovle datacraft daily refresh',
+        "sourceClient": 'Moovle datacraft hourly refresh',
         "type": "Notification",
         #  "time": "test"
     }
