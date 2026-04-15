@@ -89,8 +89,8 @@ class sqlConnection():
 
         # Optioneel: log de sync
         self.execSingle(f"""
-            INSERT INTO `{schemaName}`.syncLog (tableName, date, records)
-            VALUES (%s, %s, %s)
+            INSERT INTO `{schemaName}`.syncLog (tableName, date, records, insertedTimestamp)
+            VALUES (%s, %s, %s, NOW())
             ON DUPLICATE KEY UPDATE records=VALUES(records)
         """, (tableName, datetime.now().date(), len(df)))
 
