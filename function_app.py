@@ -22,7 +22,7 @@ def notify(msg):
 
 
 
-@app.timer_trigger(schedule="0 0 4 * * *", arg_name="myTimer", run_on_startup=False,
+@app.timer_trigger(schedule="0 0 8-18 * * *", arg_name="myTimer", run_on_startup=False,
               use_monitor=False) 
 def dailyRefresh(myTimer: func.TimerRequest) -> None:
 
