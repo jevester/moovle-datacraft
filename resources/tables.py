@@ -296,7 +296,6 @@ class Tables:
                 'customerPostingGroup': e['customerPostingGroup'],
                 'open': e['open'],
                 'dueDate': parsingDate(e['dueDate']),
-
             })
         return pd.DataFrame(data)
 

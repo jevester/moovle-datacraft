@@ -173,10 +173,6 @@ def main():
                 print(f"Error in {t['name']} >>>> {e}")
                 logging.exception(e)
 
-            # df.to_csv(f"csv/check_{endpoint.split('/')[-1]}.csv", index=False, sep=";", mode='a', header=True)
-
-        # Niet nodig
-        # sqlc.writeMany(pd.DataFrame(customerEntities), "internalEntities", schemaName, None, merge=True, mergeKeys=['id'], log=False)
         
         print('LedgerEntries kolom isUTB vullen')
         sqlc.execSingle(Queries.fillLedgerTableIsUtb())

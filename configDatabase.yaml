@@ -279,7 +279,7 @@ tables:
         remainingAmtLCY DECIMAL(18,2),
         customerPostingGroup VARCHAR(50),
         open BOOLEAN,
-        dueDate DATE
+        dueDate DATE,
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"
       indexes:
