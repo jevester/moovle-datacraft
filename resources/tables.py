@@ -227,6 +227,7 @@ class Tables:
                 'estimatedDepartureDate': parsingDate(e['estimatedDepartureDate']),
                 'parentDocumentType': e['parentDocumentType'],
                 'parentDocumentNo': e['parentDocumentNo'],
+                'orderTypeCode': e['orderTypeCode'],
                 'customsCode': e['customsCode'],
                 'tariffNo': e['tariffNo'],
                 'countryOfOriginCode': e['countryOfOriginCode'],
@@ -452,7 +453,6 @@ class Tables:
                 "city": e['city'],
                 "countryRegionName": e['countryRegionName'],
                 "modifiedDateTime": parsingDateTime(e['modifiedDateTime'])
-
             })
         return pd.DataFrame(data)
 
@@ -605,6 +605,7 @@ class Tables:
             data.append({
                 'id': e['id'],
                 'systemModifiedAt': parsingDateTime(e['systemModifiedAt']),
+                'systemCreatedAt': parsingDateTime(e['systemCreatedAt']),
                 'entryNo': e['entryNo'],
                 'documentNo': e['documentNo'],
                 'oldStatusCode': e['oldStatusCode'],
@@ -650,6 +651,51 @@ class Tables:
 
         return pd.DataFrame(data).drop_duplicates()
 
+    def wmsLocations(resp):
+        data = []
+        for e in resp:
+            data.append({
+                'id': e['id'],
+                "no": e['no'],
+                'buildingCode': e['buildingCode'],
+                "name": e['name'],
+                'parentLocationNo': e['parentLocationNo'],
+                'locationTypeCode': e['locationTypeCode'],
+                'zoneCode': e['zoneCode'],
+                'path': e['path'],
+                "modifiedDateTime": parsingDateTime(e['modifiedDateTime'])
+            })
+        return pd.DataFrame(data)
+
+    def wmsCarrierContent(resp):
+        data = []
+        for e in resp:
+            data.append({
+                'id': e['id'],
+                "carrierNo": e['carrierNo'],
+                'customerItemNo': e['customerItemNo'],
+                'batchNo': e['batchNo'],
+                'locationNo': e['locationNo'],
+                'locationPath': e['locationPath'],
+                'netWeight': e['netWeight'],
+                'buildingCode': e['buildingCode'],
+                'length': e['length'],
+                'width': e['width'],
+                'height': e['height'],
+                'unitOfMeasureCode': e['unitOfMeasureCode'],
+                'quantity': e['quantity'],
+                'carrierTypeCode': e['carrierTypeCode'],
+                'externalCustomerItemNo': e['externalCustomerItemNo'],
+                'receiptDate': parsingDate(e['receiptDate']),
+                'statusCode': e['statusCode'],
+                'locationTypeCode': e['locationTypeCode'],
+                'zoneCode': e['zoneCode'],
+                'zoneType': e['zoneType'],
+                'attribute01': e['attribute01'],
+                'custItemDescription': e['custItemDescription'],
+                "modifiedDateTime": parsingDateTime(e['modifiedDateTime'])
+            })
+        return pd.DataFrame(data)
 
 
     def sample(resp):
