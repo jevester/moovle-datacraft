@@ -21,13 +21,28 @@ def notify(msg):
     return
 
 
-
-@app.timer_trigger(schedule="0 0 8-18 * * *", arg_name="myTimer", run_on_startup=False,
+@app.timer_trigger(schedule="0 0 3 * * 1-5", arg_name="myTimer", run_on_startup=False,
               use_monitor=False) 
 def dailyRefresh(myTimer: func.TimerRequest) -> None:
 
     try:
-        script()
+        script(tableSelection=1)
+    except Exception as e:
+        notify(str(e))  
+
+    if myTimer.past_due:
+        logging.info('The timer is past due!')
+
+    logging.info('Python timer trigger function executed.')
+
+
+
+@app.timer_trigger(schedule="0 54 5-14 * * 1-5", arg_name="myTimer", run_on_startup=False,
+              use_monitor=False) 
+def liveRefresh(myTimer: func.TimerRequest) -> None:
+
+    try:
+        script(tableSelection=2)
     except Exception as e:
         notify(str(e))  
 

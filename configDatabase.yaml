@@ -224,12 +224,15 @@ tables:
         externalReference VARCHAR(50),
         shippingAgentCode VARCHAR(50),
         announcedDate DATE,
+        announcedTime TIME,
         arrivedDate DATE,
+        arrivedTime TIME,
         departedDate DATE,
         deliveryDate DATE,
         estimatedDepartureDate DATE,
         parentDocumentType VARCHAR(50),
         parentDocumentNo VARCHAR(50),
+        orderTypeCode VARCHAR(50),
         customsCode VARCHAR(50),
         tariffNo VARCHAR(50),
         countryOfOriginCode VARCHAR(50),
@@ -279,7 +282,7 @@ tables:
         remainingAmtLCY DECIMAL(18,2),
         customerPostingGroup VARCHAR(50),
         open BOOLEAN,
-        dueDate DATE
+        dueDate DATE,
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"
       indexes:
@@ -477,12 +480,81 @@ tables:
       columns: "
         id CHAR(36) NOT NULL,
         systemModifiedAt DATETIME,
+        systemCreatedAt DATETIME,
         entryNo BIGINT,
         documentNo VARCHAR(50),
         oldStatusCode VARCHAR(50),
         newStatusCode VARCHAR(50),
         userID VARCHAR(50),
         templateCode VARCHAR(50),
+        insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)"
+      indexes:
+        - name: IX_Id
+          columns:
+            - id
+
+    - name: salesInvoiceHeaders
+      columns: "
+        invoiceHeaderId CHAR(36) NOT NULL,
+        systemModifiedAt DATETIME,
+        documentNo VARCHAR(50),
+        invoiceNo INT,
+        insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (invoiceHeaderId)"
+      indexes:
+        - name: IX_Id
+          columns:
+            - invoiceHeaderId
+
+    - name: detailedCustomerLedgerEntries
+      columns: "
+        id CHAR(36) NOT NULL,
+        entryNumber INT,
+        custLedgerEntryNumber INT,
+        postingDate DATE,
+        documentType VARCHAR(50),
+        documentNumber VARCHAR(50),
+        amount DECIMAL(18,4),
+        customerNumber VARCHAR(50),
+        sourceCode VARCHAR(50),
+        transactionNumber INT,
+        initialEntryDueDate DATE,
+        initialDocumentType VARCHAR(50),
+        initialDocumentNumber VARCHAR(50),
+        appliedCustLedgerEntryNumber INT,
+        insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)"
+      indexes:
+        - name: IX_Id
+          columns:
+            - id
+
+    - name: wmsCarrierContent
+      columns: "
+        id CHAR(36) NOT NULL,
+        carrierNo VARCHAR(50),
+        customerItemNo VARCHAR(50),
+        batchNo VARCHAR(50),
+        locationNo VARCHAR(50),
+        locationPath VARCHAR(255),
+        netWeight DECIMAL(18,4),
+        buildingCode VARCHAR(50),
+        length DECIMAL(18,4),
+        width DECIMAL(18,4),
+        height DECIMAL(18,4),
+        unitOfMeasureCode VARCHAR(20),
+        quantity DECIMAL(18,4),
+        carrierTypeCode VARCHAR(50),
+        externalCustomerItemNo VARCHAR(100),
+        receiptDate DATE,
+        statusCode VARCHAR(50),
+        locationTypeCode VARCHAR(50),
+        zoneCode VARCHAR(50),
+        zoneType VARCHAR(50),
+        attribute01 VARCHAR(255),
+        custItemDescription VARCHAR(255),
+        modifiedDateTime DATETIME,
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"
       indexes:
@@ -623,5 +695,19 @@ tables:
         noOfReturnOrders INT,
         noOfCreditMemos INT,
         statusCode3PL VARCHAR(50),
+        insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)"
+
+    - name: wmsLocations
+      columns: "
+        id CHAR(36) NOT NULL,
+        no VARCHAR(50),
+        buildingCode VARCHAR(50),
+        name VARCHAR(100),
+        parentLocationNo VARCHAR(50),
+        locationTypeCode VARCHAR(50),
+        zoneCode VARCHAR(50),
+        path VARCHAR(255),
+        modifiedDateTime DATETIME,
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"

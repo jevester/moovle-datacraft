@@ -219,12 +219,15 @@ class Tables:
                 'externalReference': e['externalReference'],
                 'shippingAgentCode': e['shippingAgentCode'],
                 'announcedDate': parsingDate(e['announcedDate']),
+                'announcedTime': e['announcedTime'],
                 'arrivedDate': parsingDate(e['arrivedDate']),
+                'arrivedTime': e['arrivedTime'],
                 'departedDate': parsingDate(e['departedDate']),
                 'deliveryDate': parsingDate(e['deliveryDate']),
                 'estimatedDepartureDate': parsingDate(e['estimatedDepartureDate']),
                 'parentDocumentType': e['parentDocumentType'],
                 'parentDocumentNo': e['parentDocumentNo'],
+                'orderTypeCode': e['orderTypeCode'],
                 'customsCode': e['customsCode'],
                 'tariffNo': e['tariffNo'],
                 'countryOfOriginCode': e['countryOfOriginCode'],
@@ -296,7 +299,6 @@ class Tables:
                 'customerPostingGroup': e['customerPostingGroup'],
                 'open': e['open'],
                 'dueDate': parsingDate(e['dueDate']),
-
             })
         return pd.DataFrame(data)
 
@@ -451,7 +453,6 @@ class Tables:
                 "city": e['city'],
                 "countryRegionName": e['countryRegionName'],
                 "modifiedDateTime": parsingDateTime(e['modifiedDateTime'])
-
             })
         return pd.DataFrame(data)
 
@@ -604,6 +605,7 @@ class Tables:
             data.append({
                 'id': e['id'],
                 'systemModifiedAt': parsingDateTime(e['systemModifiedAt']),
+                'systemCreatedAt': parsingDateTime(e['systemCreatedAt']),
                 'entryNo': e['entryNo'],
                 'documentNo': e['documentNo'],
                 'oldStatusCode': e['oldStatusCode'],
@@ -612,6 +614,87 @@ class Tables:
                 'templateCode': e['templateCode']
             })
 
+        return pd.DataFrame(data)
+
+    def salesInvoiceHeaders(resp):
+        data = []
+        for e in resp:
+            for f in e['salesInvoiceLines']:
+                data.append({
+                    'invoiceHeaderId': e['id'],
+                    'systemModifiedAt': parsingDateTime(e['systemModifiedAt']),
+                    'documentNo': f['wmsPostedDocNo'],
+                    'invoiceNo': e['no'],
+                })
+
+        return pd.DataFrame(data).drop_duplicates()
+
+    def detailedCustomerLedgerEntries(resp):
+        data = []
+        for e in resp:
+            data.append({
+                'id': e['id'],
+                'entryNumber': e['entryNumber'],
+                'custLedgerEntryNumber': e['custLedgerEntryNumber'],
+                'postingDate': parsingDate(e['postingDate']),
+                'documentType': e['documentType'],
+                'documentNumber': e['documentNumber'],
+                'amount': e['amount'],
+                'customerNumber': e['customerNumber'],
+                'sourceCode': e['sourceCode'],
+                'transactionNumber': e['transactionNumber'],
+                'initialEntryDueDate': parsingDate(e['initialEntryDueDate']),
+                'initialDocumentType': e['initialDocumentType'],
+                'initialDocumentNumber': e['initialDocumentNumber'],
+                'appliedCustLedgerEntryNumber': e['appliedCustLedgerEntryNumber'],
+            })
+
+        return pd.DataFrame(data).drop_duplicates()
+
+    def wmsLocations(resp):
+        data = []
+        for e in resp:
+            data.append({
+                'id': e['id'],
+                "no": e['no'],
+                'buildingCode': e['buildingCode'],
+                "name": e['name'],
+                'parentLocationNo': e['parentLocationNo'],
+                'locationTypeCode': e['locationTypeCode'],
+                'zoneCode': e['zoneCode'],
+                'path': e['path'],
+                "modifiedDateTime": parsingDateTime(e['modifiedDateTime'])
+            })
+        return pd.DataFrame(data)
+
+    def wmsCarrierContent(resp):
+        data = []
+        for e in resp:
+            data.append({
+                'id': e['id'],
+                "carrierNo": e['carrierNo'],
+                'customerItemNo': e['customerItemNo'],
+                'batchNo': e['batchNo'],
+                'locationNo': e['locationNo'],
+                'locationPath': e['locationPath'],
+                'netWeight': e['netWeight'],
+                'buildingCode': e['buildingCode'],
+                'length': e['length'],
+                'width': e['width'],
+                'height': e['height'],
+                'unitOfMeasureCode': e['unitOfMeasureCode'],
+                'quantity': e['quantity'],
+                'carrierTypeCode': e['carrierTypeCode'],
+                'externalCustomerItemNo': e['externalCustomerItemNo'],
+                'receiptDate': parsingDate(e['receiptDate']),
+                'statusCode': e['statusCode'],
+                'locationTypeCode': e['locationTypeCode'],
+                'zoneCode': e['zoneCode'],
+                'zoneType': e['zoneType'],
+                'attribute01': e['attribute01'],
+                'custItemDescription': e['custItemDescription'],
+                "modifiedDateTime": parsingDateTime(e['modifiedDateTime'])
+            })
         return pd.DataFrame(data)
 
 
