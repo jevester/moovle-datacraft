@@ -146,6 +146,7 @@ class sqlConnection():
             self.execSingle(
                 f"""CREATE TABLE `{schemaName}`.{table['name']}"""
                 f"""({table['columns'].replace('$NAME', table['name'])}{(','+','.join(constraints)) if len(constraints) > 0 else ''})"""
+                f""" ROW_FORMAT=DYNAMIC"""
                 )
             
             if table.get('indexes'):
