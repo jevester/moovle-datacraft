@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 import pandas as pd
 import numpy as np
@@ -7,7 +8,7 @@ def parsingDate(date):
     if date == '0001-01-01':
         return pd.NA
     else:
-        return date
+        return pd.to_datetime(date).date()
 
 def parsingDateTime(v):
     return pd.to_datetime(v)
@@ -184,6 +185,15 @@ class Tables:
 
 
     def wmsDocumentHeaders(resp):
+
+        def moveArrivedDate(d, status):
+            if pd.isna(d):
+                return d
+            statusClean = int(status.split('-')[0])
+            if statusClean < 30 and d < datetime.now().date():
+                return datetime.now().date()
+            return d
+
         data = []
         for e in resp:
             data.append({
@@ -221,6 +231,7 @@ class Tables:
                 'announcedDate': parsingDate(e['announcedDate']),
                 'announcedTime': e['announcedTime'],
                 'arrivedDate': parsingDate(e['arrivedDate']),
+                'arrivedDateMoving': moveArrivedDate(parsingDate(e['arrivedDate']), e['statusCode']),
                 'arrivedTime': e['arrivedTime'],
                 'departedDate': parsingDate(e['departedDate']),
                 'deliveryDate': parsingDate(e['deliveryDate']),
