@@ -270,6 +270,9 @@ tables:
         - name: IX_Id
           columns:
             - id
+        - name: IX_wmsDocNo
+          columns:
+            - no
 
     - name: customerLedgerEntries
       columns: "
@@ -390,6 +393,9 @@ tables:
         - name: IX_Id
           columns:
             - id
+        - name: IX_wmsPostedDocNo
+          columns:
+            - no
 
     - name: wmsPostedDocumentLines
       columns: "
@@ -507,6 +513,12 @@ tables:
         - name: IX_Id
           columns:
             - invoiceHeaderId
+        - name: IX_documentNo
+          columns:
+            - documentNo
+        - name: IX_invoiceNo
+          columns:
+            - invoiceNo
 
     - name: detailedCustomerLedgerEntries
       columns: "
