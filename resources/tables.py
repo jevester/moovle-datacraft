@@ -210,7 +210,7 @@ class Tables:
                 'shipToAddressNo': e['shipToAddressNo'],
                 'billOfLadingNo': e['billOfLadingNo'],
                 'shortcutDimension2Code': e['shortcutDimension2Code'],
-                'attribute04': e['attribute04'],
+                'attribute04': e['attribute04'] or pd.NA,
                 'containerSizeCode': e['containerSizeCode'],
                 'sellToCustomerName': e['sellToCustomerName'],
                 'billToCustomerNo': e['billToCustomerNo'],
@@ -404,7 +404,7 @@ class Tables:
                 "sendersAddressName": e['sendersAddressName'],
                 "shipToAddressName": e['shipToAddressName'],
                 "shortcutDimension2Code": e['shortcutDimension2Code'],
-                "attribute04": e['attribute04'],
+                "attribute04": e['attribute04'] or pd.NA,
                 "attribute05": e['attribute05']
 
             })
