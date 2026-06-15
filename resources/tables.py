@@ -636,6 +636,14 @@ class Tables:
                     'systemModifiedAt': parsingDateTime(e['systemModifiedAt']),
                     'documentNo': f['wmsPostedDocNo'],
                     'invoiceNo': e['no'],
+                    'invoiceTypeCode3PL': e['invoiceTypeCode3PL'], 
+                    'dueDate': parsingDate(e['dueDate']), 
+                    'custLedgerEntryNo': e['custLedgerEntryNo'],
+                    'orderDate': parsingDate(e['orderDate']),
+                    'shipmentDate': parsingDate(e['shipmentDate']),
+                    'documentDate': parsingDate(e['documentDate']), 
+                    'pmtDiscountDate': parsingDate(e['pmtDiscountDate']),
+                    'paymentTermsCode': e['paymentTermsCode'],
                 })
 
         return pd.DataFrame(data).drop_duplicates()

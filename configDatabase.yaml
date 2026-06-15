@@ -507,6 +507,14 @@ tables:
         systemModifiedAt DATETIME,
         documentNo VARCHAR(50),
         invoiceNo INT,
+        invoiceTypeCode3PL VARCHAR(75),
+        dueDate DATE,
+        custLedgerEntryNo INT,
+        orderDate DATE,
+        shipmentDate DATE,
+        documentDate DATE,
+        pmtDiscountDate DATE,
+        paymentTermsCode VARCHAR(10),
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (invoiceHeaderId)"
       indexes:

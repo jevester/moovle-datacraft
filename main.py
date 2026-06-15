@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 import logging
 from time import sleep
 
-import pandas as pd
+# import pandas as pd
 import yaml
 
 from resources.supportFunctions import sqlConnection, secrets
@@ -122,7 +122,7 @@ def main(tableSelection=1):
         {'name': 'wmsDocumentCommentLines', 'func': Tables.wmsDocumentCommentLines, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'wmsDocumentCommentLines', 'merge': True, 'mergeKeys': ['id'], 'filter': True, 'filterField': 'date', 'cols': ['*'], 'expandCol': None, 'expandColSelect': [], 'pars': None},
         {'name': 'purchaseHeaders', 'func': Tables.purchaseHeaders, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'purchaseHeaders', 'merge': True, 'mergeKeys': ['id'], 'filter': True, 'filterField': 'postingDate', 'cols': ['id', "documentType", "no", "payToVendorNo", "payToName", "yourReference", "orderDate", "postingDate", "purchaserCode", "amount", "amountIncludingVAT", "vendorInvoiceNo", "documentDate"], 'expandCol': None, 'expandColSelect': [], 'pars': None},
         {'name': 'statusLog', 'func': Tables.statusLog, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'statusLog', 'merge': True, 'mergeKeys': ['id'], 'filter': True, 'filterField': 'systemModifiedAt', 'cols': ['id', "systemModifiedAt", 'systemCreatedAt', "entryNo", "documentNo", "oldStatusCode", "newStatusCode", "userID", 'templateCode'], 'expandCol': None, 'expandColSelect': [], 'pars': None},
-        {'name': 'salesInvoiceHeaders', 'func': Tables.salesInvoiceHeaders, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'salesInvoiceHeaders', 'merge': True, 'mergeKeys': ['invoiceHeaderId'], 'filter': True, 'filterField': 'systemModifiedAt', 'cols': ['id', 'systemModifiedAt', 'externalDocumentNo', 'no'], 'expandCol': 'salesInvoiceLines', 'expandColSelect': ['id', 'wmsPostedDocNo'], 'pars': None},
+        {'name': 'salesInvoiceHeaders', 'func': Tables.salesInvoiceHeaders, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'salesInvoiceHeaders', 'merge': True, 'mergeKeys': ['invoiceHeaderId'], 'filter': True, 'filterField': 'systemModifiedAt', 'cols': ['id', 'systemModifiedAt', 'externalDocumentNo', 'no', 'invoiceTypeCode3PL', 'dueDate', 'custLedgerEntryNo', 'orderDate', 'paymentTermsCode', 'shipmentDate'], 'expandCol': 'salesInvoiceLines', 'expandColSelect': ['id', 'wmsPostedDocNo'], 'pars': None},
         {'name': 'detailedCustomerLedgerEntries', 'func': Tables.detailedCustomerLedgerEntries, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'detailedCustomerLedgerEntries', 'merge': False, 'mergeKeys': ['id'], 'filter': False, 'filterField': None, 'cols': ['id', 'entryNumber', 'custLedgerEntryNumber', 'postingDate', 'documentType', 'documentNumber', 'amount', 'customerNumber', 'sourceCode', 'transactionNumber','initialEntryDueDate','initialDocumentType','initialDocumentNumber','appliedCustLedgerEntryNumber'], 'expandCol': None, 'expandColSelect': [], 'pars': None},
         {'name': 'wmsCarrierContent', 'func': Tables.wmsCarrierContent, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'wmsCarrierContent', 'merge': False, 'mergeKeys': ['id'], 'filter': False, 'filterField': None, 'cols': ['id', 'modifiedDateTime', "locationNo", "carrierNo", "customerItemNo", "batchNo", "locationPath", "netWeight", "buildingCode", "length", "width", "height","unitOfMeasureCode","quantity", "carrierTypeCode", "receiptDate", "statusCode", "locationTypeCode", "zoneCode", "zoneType", "custItemDescription", "externalCustomerItemNo", "attribute01"], 'expandCol': None, 'expandColSelect': [], 'pars': None},
 
@@ -139,7 +139,10 @@ def main(tableSelection=1):
     ]
 
     tbls_test = [
-        {'name': 'statusLog', 'func': Tables.statusLog, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'statusLog', 'merge': True, 'mergeKeys': ['id'], 'filter': False, 'filterField': 'systemModifiedAt', 'cols': ['id', "systemModifiedAt", 'systemCreatedAt', "entryNo", "documentNo", "oldStatusCode", "newStatusCode", "userID", 'templateCode'], 'expandCol': None, 'expandColSelect': [], 'pars': None},
+        # {'name': 'salesInvoiceHeaders', 'func': Tables.check, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'salesInvoiceHeaders', 'merge': True, 'mergeKeys': ['invoiceHeaderId'], 'filter': True, 'filterField': 'systemModifiedAt', 'cols': ['*'], 'expandCol': 'salesInvoiceLines', 'expandColSelect': ['*'], 'pars': "(sellToCustomerNo eq '16319' AND invoiceTypeCode3PL ne '')"},
+        {'name': 'salesInvoiceHeaders', 'func': Tables.salesInvoiceHeaders, 'urlDir': 'boltrics/boltrics/v1.0', 'endpoint': 'salesInvoiceHeaders', 'merge': True, 'mergeKeys': ['invoiceHeaderId'], 'filter': True, 'filterField': 'systemModifiedAt', 'cols': ['id', 'systemModifiedAt', 'externalDocumentNo', 'no', 'invoiceTypeCode3PL', 'dueDate', 'custLedgerEntryNo', 'orderDate', 'paymentTermsCode', 'shipmentDate', 'documentDate', 'pmtDiscountDate'], 'expandCol': 'salesInvoiceLines', 'expandColSelect': ['id', 'wmsPostedDocNo'], 'pars': None},
+
+    
     ]
     tbls = {1: tbls, 2: tbls_live, 3: tbls_test}[tableSelection]
 
@@ -174,9 +177,9 @@ def main(tableSelection=1):
             endpoint = f'{t['urlDir']}{'/' if t['urlDir'] else ''}{t['endpoint']}'
             url = f"{base_url}/{endpoint}"
 
-            # print((makeFilter(synclog, tableName, t['filterField'], t.get('pars', None)) if t['filter'] else {}))
-            # exit()
-            pars = (makeFilter(synclog, tableName, t['filterField'], t.get('pars', None)) if t['filter'] else {}) if not testing else {}
+            # pars = (makeFilter({}, tableName, t['filterField'], t.get('pars', None)) if t['filter'] else {})
+            pars = (makeFilter(synclog, tableName, t['filterField'], t.get('pars', None)) if t['filter'] else {})
+
             resp = get_resp(url, headers=headers, pagination=False if testing else True, addpars=pars, cols=t['cols'], expandCol=t['expandCol'], expandColSelect=t['expandColSelect'])
             if len(resp) == 0 and testing:
                 continue
