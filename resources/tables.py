@@ -641,8 +641,8 @@ class Tables:
                     'custLedgerEntryNo': e['custLedgerEntryNo'],
                     'orderDate': parsingDate(e['orderDate']),
                     'shipmentDate': parsingDate(e['shipmentDate']),
-                    'documentDate': parsingDate(e['documentDate']), 
-                    'pmtDiscountDate': parsingDate(e['pmtDiscountDate']),
+                    'documentDate': parsingDate(e.get('documentDate')), 
+                    'pmtDiscountDate': parsingDate(e.get('pmtDiscountDate')),
                     'paymentTermsCode': e['paymentTermsCode'],
                 })
 
