@@ -264,6 +264,8 @@ tables:
         consigneeName TEXT,
         shipperName TEXT,
         agentName TEXT,
+        productType VARCHAR(50),
+        plannedEndDate DATE,
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"
       indexes:

@@ -268,7 +268,9 @@ class Tables:
                 'carrierQtyCreated': e['carrierQtyCreated'],
                 'consigneeName': e['consigneeName'],
                 'shipperName': e['shipperName'],
-                'agentName': e['agentName']
+                'agentName': e['agentName'],
+                'productType': e['attribute07'],
+                'plannedEndDate': parsingDate(e['plannedEndDate']),
             })
         return pd.DataFrame(data)
 
