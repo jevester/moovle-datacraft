@@ -271,6 +271,7 @@ class Tables:
                 'agentName': e['agentName'],
                 'productType': e['attribute07'],
                 'plannedEndDate': parsingDate(e['plannedEndDate']),
+                'sortingOrder': e['sortingOrder'],
             })
         return pd.DataFrame(data)
 

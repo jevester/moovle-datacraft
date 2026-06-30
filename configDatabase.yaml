@@ -266,6 +266,7 @@ tables:
         agentName TEXT,
         productType VARCHAR(50),
         plannedEndDate DATE,
+        sortingOrder INT,
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"
       indexes:
@@ -274,7 +275,7 @@ tables:
             - id
         - name: IX_wmsDocNo
           columns:
-            - no
+            - "no"
 
     - name: customerLedgerEntries
       columns: "
