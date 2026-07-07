@@ -37,7 +37,7 @@ def dailyRefresh(myTimer: func.TimerRequest) -> None:
 
 
 
-@app.timer_trigger(schedule="0 54 5-14 * * 1-5", arg_name="myTimer", run_on_startup=False,
+@app.timer_trigger(schedule="0 25,55 5-14 * * 1-5", arg_name="myTimer", run_on_startup=False,
               use_monitor=False) 
 def liveRefresh(myTimer: func.TimerRequest) -> None:
 
