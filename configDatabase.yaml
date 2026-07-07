@@ -267,6 +267,7 @@ tables:
         productType VARCHAR(50),
         plannedEndDate DATE,
         sortingOrder INT,
+        uitvoerderPdi VARCHAR(100),
         insertedTimestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (id)"
       indexes:

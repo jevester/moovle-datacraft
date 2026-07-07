@@ -194,6 +194,12 @@ class Tables:
                 return datetime.now().date()
             return d
 
+        def docInfoExtracter(ls: list, key):
+            for e in ls:
+                if e['informationCode'] == key:
+                    return e['textValue']
+            return pd.NA
+
         data = []
         for e in resp:
             data.append({
@@ -272,6 +278,7 @@ class Tables:
                 'productType': e['attribute07'],
                 'plannedEndDate': parsingDate(e['plannedEndDate']),
                 'sortingOrder': e['sortingOrder'],
+                'uitvoerderPdi': docInfoExtracter(e['wmsDocInfoSetEntries'], '06PDIUS'),
             })
         return pd.DataFrame(data)
 
